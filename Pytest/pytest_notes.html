@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>1&period; PyTest Notes</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="1-pytest-notes">1. PyTest Notes</h1>
+<ul>
+<li><a href="#1-pytest-notes">1. PyTest Notes</a>
+<ul>
+<li><a href="#11-getting-started-with-pytest">1.1. Getting started with pytest</a></li>
+<li><a href="#12-writing-test-function">1.2. Writing Test function</a></li>
+<li><a href="#13-pytest-fixtures">1.3. Pytest Fixtures</a></li>
+<li><a href="#14-built-in-fixtures">1.4. Built-in fixtures</a></li>
+<li><a href="#15-parameterization">1.5. Parameterization</a>
+<ul>
+<li><a href="#151-function-parameterization">1.5.1. Function parameterization</a></li>
+<li><a href="#152-fixture-parameterization">1.5.2. Fixture parameterization</a></li>
+</ul>
+</li>
+<li><a href="#16-test-strategy">1.6. Test Strategy</a></li>
+<li><a href="#17-configuration-files">1.7. Configuration Files</a></li>
+<li><a href="#18-coverage">1.8. Coverage</a></li>
+<li><a href="#19-mocking">1.9. Mocking</a></li>
+<li><a href="#110-tox-and-ci">1.10. Tox and CI</a></li>
+<li><a href="#111-debugging">1.11. Debugging</a>
+<ul>
+<li><a href="#1111-flags-for-selecting-which-tests-to-run-in-which-order-and-when-to-stop">1.11.1. Flags for selecting which tests to run, in which order, and when to stop:</a></li>
+<li><a href="#1112-flags-to-control-pytest-output">1.11.2. Flags to control pytest output:</a></li>
+<li><a href="#1113-flags-to-start-a-command-line-debugger">1.11.3. Flags to start a command-line debugger:</a></li>
+</ul>
+</li>
+<li><a href="#112-third-party-plugins">1.12. Third-party Plugins</a></li>
+<li><a href="#113-building-plugins">1.13. Building plugins</a></li>
+<li><a href="#114-advanced-parameterization">1.14. Advanced Parameterization</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="11-getting-started-with-pytest">1.1. Getting started with pytest</h2>
+<ul>
+<li>pytest identifies
+<ul>
+<li>files named <em><em><a href="http://test.py">test.py</a> or test</em></em>.py</li>
+<li>Functions named test_*()</li>
+<li>Classes named TestSomething</li>
+</ul>
+</li>
+<li>pytest outcomes-
+<ul>
+<li>PASSED (.)</li>
+<li>FAILED (F) - exception in test</li>
+<li>SKIPPED (s) - marked to skip</li>
+<li>XFAIL (x) - marked as expected to fail</li>
+<li>XPASS (X)  - expected to fail but passed</li>
+<li>ERROR (E) - exception in fixture</li>
+</ul>
+</li>
+<li>Convert dict to class object using ClassName(**object)</li>
+<li>Dunder keywords - Magic functions starting with double underscore</li>
+<li><code>-r</code> flag with pytest shows the extra short test summary info. <code>-r</code> needs to be combined with a character like <code>s</code> (show why something skipped) or <code>a</code> (show all except pass) or <code>A</code> (all).</li>
+</ul>
+<h2 id="12-writing-test-function">1.2. Writing Test function</h2>
+<ul>
+<li>2 ways to prove assertion-
+<ul>
+<li><code>Assert</code> keyword</li>
+<li><code>pytest.fail(message)</code></li>
+</ul>
+</li>
+<li>Assertion helper function - Add <code>__tracebackhide__ = True</code> inside the test function if you don’t want the traceback of that function to be printed in the output if it fails</li>
+<li>To check if code is appropriately raising an exception as expected, you can test it as follows-</li>
+</ul>
+<pre><code class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">test_raises_with_info_alt</span>():
+    <span class="hljs-keyword">with</span> pytest.raises(TypeError) <span class="hljs-keyword">as</span> exc_info:
+        cards.CardsDB()
+    expected = <span class="hljs-string">&quot;missing 1 required positional argument&quot;</span>
+    <span class="hljs-keyword">assert</span> expected <span class="hljs-keyword">in</span> <span class="hljs-built_in">str</span>(exc_info.value)
+</code></pre>
+<ul>
+<li>Arrange Test Functions-
+<ul>
+<li>Arrange/Act/Assert or</li>
+<li>Given/When/Then</li>
+</ul>
+</li>
+<li>If you have tests inside a class then call it as follows <code>test_file.py::TestClass::test_function</code></li>
+<li>The <code>-k</code> parameter for pytest can be used to run only certain tests with some keyword in them. You can give expressions as well. For eg: “equality and diff” will run only those tests with both equality and diff keywords in their file name/class name/function name.</li>
+</ul>
+<h2 id="13-pytest-fixtures">1.3. Pytest Fixtures</h2>
+<ul>
+<li>Fixtures can have the setup and teardown code. If there is teardown, use <code>yield</code> keyword, if not then use return. Yield will return the content temporarily and once the code is done it comes back to the fixture and runs teardown.</li>
+<li>Use the <code>—setup-show</code> flag with pytest to see the order in which the code is run (setup, test name, teardown etc)</li>
+<li>Pytest shows output/print statements of a test function only if they fail. If you want to see it even if it passes use the <code>-s</code> flag.</li>
+<li>Different types of scopes-
+<ul>
+<li><strong>Function (default)</strong> - once per test function</li>
+<li><strong>Module</strong> - once per test file</li>
+<li><strong>Package</strong> - once per test directory</li>
+<li><strong>Session</strong> - once per test session (invocation of pytest)</li>
+<li><strong>Class</strong> - once per test class</li>
+</ul>
+</li>
+<li>Conftest doesn’t have to necessarily be in the same folder as the test file. It can be one/multiple directories up. The way to find the location of fixtures is by adding <code>—fixture</code> to pytest to see all built-in and custom made fixtures.</li>
+<li><code>—fixtures-per-test</code> : gives the fixtures used by each test and where they are defined</li>
+<li>Use multiple fixture levels, the lower level fixtures having a broader scope and the higher level fixtures having smaller scope, in order to structure it more neatly.</li>
+<li>The scope of a fixture can be dynamically changed using the concept <strong>PYTEST HOOKS</strong>. For eg -</li>
+</ul>
+<pre><code class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">pytest_addoption</span>(<span class="hljs-params">parser</span>):
+    parser.addoption(
+        <span class="hljs-string">&quot;--func-db&quot;</span>,
+        action=<span class="hljs-string">&quot;store_true&quot;</span>,
+        default=<span class="hljs-literal">False</span>,
+        <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;new db for each test&quot;</span>,
+    )
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">db_scope</span>(<span class="hljs-params">fixture_name, config</span>):
+    <span class="hljs-keyword">if</span> config.getoption(<span class="hljs-string">&quot;--func-db&quot;</span>, <span class="hljs-literal">None</span>):
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;function&quot;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;session&quot;</span>
+
+<span class="hljs-meta">@pytest.fixture(<span class="hljs-params">scope=db_scope</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">db</span>():
+    <span class="hljs-string">&quot;&quot;&quot;CardsDB object connected to a temporary database&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">with</span> TemporaryDirectory() <span class="hljs-keyword">as</span> db_dir:
+        db_path = Path(db_dir)
+        db_ = cards.CardsDB(db_path)
+        <span class="hljs-keyword">yield</span> db_
+        db_.close()
+</code></pre>
+<p>if you pass <code>—func-db</code> flag while running pytest, it will set db fixture to function level, else set it to session level.</p>
+<ul>
+<li><strong>Autouse fixtures</strong> - If a fixture is not used by a function, pytest won’t run the fixture code. If you still want the fixture to run anyway, that can be done by setting <code>autouse=True</code> inside <code>@pytest.fixture()</code> decorator. By default, it is function scope, that can be changed.</li>
+</ul>
+<pre><code class="language-python"><span class="hljs-meta">@pytest.fixture(<span class="hljs-params">autouse=<span class="hljs-literal">True</span>, scope=<span class="hljs-string">&quot;session&quot;</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">footer_session_scope</span>():
+    <span class="hljs-string">&quot;&quot;&quot;Report the time at the end of a session.&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">yield</span>
+    now = time.time()
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;--&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;finished : {}&quot;</span>.<span class="hljs-built_in">format</span>(
+        time.strftime(<span class="hljs-string">&quot;%d %b %X&quot;</span>, time.localtime(now))))
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;-----------------&quot;</span>)
+
+
+<span class="hljs-meta">@pytest.fixture(<span class="hljs-params">autouse=<span class="hljs-literal">True</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">footer_function_scope</span>():
+    <span class="hljs-string">&quot;&quot;&quot;Report test durations after each function.&quot;&quot;&quot;</span>
+    start = time.time()
+    <span class="hljs-keyword">yield</span>
+    stop = time.time()
+    delta = stop - start
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\ntest duration : {:0.3} seconds&quot;</span>.<span class="hljs-built_in">format</span>(delta))
+</code></pre>
+<ul>
+<li>Fixtures can be renamed with <code>name=“name”</code> inside <code>pytest.fixture</code> decorator.</li>
+</ul>
+<h2 id="14-built-in-fixtures">1.4. Built-in fixtures</h2>
+<ul>
+<li>Useful Pytest in-built fixtures -
+<ul>
+<li>tmp_path</li>
+<li>tmp_path_factory (session scope)</li>
+<li>Capsys (Reads output and error, also can be used to disable output capture)</li>
+<li>monkeypatch (Use it to patch functions and return a desired value for testing purposes only, kinda like mocking)</li>
+</ul>
+</li>
+<li>CliRunner is another alternative to subprocess.run. Example code-</li>
+</ul>
+<pre><code class="language-python"><span class="hljs-keyword">import</span> cards
+<span class="hljs-keyword">from</span> typer.testing <span class="hljs-keyword">import</span> CliRunner
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">test_version_v3</span>():
+    runner = CliRunner()
+    result = runner.invoke(cards.app, [<span class="hljs-string">&quot;version&quot;</span>])
+    output = result.output.rstrip()
+    <span class="hljs-keyword">assert</span> output == cards.__version__
+</code></pre>
+<ul>
+<li>Monkeypatch can be used to patch different things differently. For example -</li>
+</ul>
+<pre><code class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_path</span>():
+    db_path_env = os.getenv(<span class="hljs-string">&quot;CARDS_DB_DIR&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
+    <span class="hljs-keyword">if</span> db_path_env:
+        db_path = pathlib.Path(db_path_env)
+    <span class="hljs-keyword">else</span>:
+        db_path = pathlib.Path.home() / <span class="hljs-string">&quot;cards_db&quot;</span>
+    <span class="hljs-keyword">return</span> db_path
+</code></pre>
+<ul>
+<li>This function can be patched in 3 different ways -
+<ul>
+<li>Patch <code>env</code> variable [ monkeypatch.setenv(&quot;CARDS_DB_DIR&quot;, str(tmp_path)) ]</li>
+<li>Patch <code>get_path</code> function itself [ monkeypatch.setattr(cards.cli, &quot;get_path&quot;, tmp_path) ]</li>
+<li>Patch <code>pathlib.path.home()</code> [ monkeypatch.setattr(cards.cli.pathlib.Path, &quot;home&quot;, fake_home) ]</li>
+</ul>
+</li>
+</ul>
+<h2 id="15-parameterization">1.5. Parameterization</h2>
+<ul>
+<li>Suppose you have to write tests that do the same thing but just have different inputs. While you can achieve that using a for loop and calling the same function with different inputs, it doesn’t tell you much about what fails if it fails. Instead you can use <strong>parameterisation</strong>. There are 3 ways to do parameterization:
+<h3 id="151-function-parameterization">1.5.1. Function parameterization</h3>
+For example -<pre><code class="language-python"><span class="hljs-meta">@pytest.mark.parametrize(<span class="hljs-params">
+    <span class="hljs-string">&quot;start_summary, start_state&quot;</span>,
+    [
+        (<span class="hljs-params"><span class="hljs-string">&quot;write pytest book&quot;</span>, <span class="hljs-string">&quot;done&quot;</span></span>),
+        (<span class="hljs-params"><span class="hljs-string">&quot;create video course&quot;</span>, <span class="hljs-string">&quot;in prog&quot;</span></span>),
+        (<span class="hljs-params"><span class="hljs-string">&quot;write tdd book&quot;</span>, <span class="hljs-string">&quot;todo&quot;</span></span>),
+    ],
+</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">test_finish</span>(<span class="hljs-params">cards_db, start_summary, start_state</span>):
+    initial_card = Card(summary=start_summary, state=start_state)
+    index = cards_db.add_card(initial_card)
+
+    cards_db.finish(index)
+
+    card = cards_db.get_card(index)
+    <span class="hljs-keyword">assert</span> card.state == <span class="hljs-string">&quot;done&quot;</span>
+</code></pre>
+<ul>
+<li>NOTE: Doesn't matter if you use list of tuples inside parameterize.</li>
+</ul>
+<h3 id="152-fixture-parameterization">1.5.2. Fixture parameterization</h3>
+<pre><code class="language-python"><span class="hljs-meta">  @pytest.fixture(<span class="hljs-params">params=[<span class="hljs-string">&quot;done&quot;</span>, <span class="hljs-string">&quot;in prog&quot;</span>, <span class="hljs-string">&quot;todo&quot;</span>]</span>)</span>
+  <span class="hljs-keyword">def</span> <span class="hljs-title function_">start_state</span>(<span class="hljs-params">request</span>):
+      <span class="hljs-keyword">return</span> request.param
+
+
+  <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_finish</span>(<span class="hljs-params">cards_db, start_state</span>):
+      c = Card(<span class="hljs-string">&quot;write tdd book&quot;</span>, state=start_state)
+      index = cards_db.add_card(c)
+      cards_db.finish(index)
+      card = cards_db.get_card(index)
+      <span class="hljs-keyword">assert</span> card.state == <span class="hljs-string">&quot;done&quot;</span>
+</code></pre>
+<h3 id="153-using-pytest-hook-pytest_generate_tests">1.5.3. Using pytest hook (pytest_generate_tests)</h3>
+<pre><code class="language-python">  <span class="hljs-keyword">def</span> <span class="hljs-title function_">pytest_generate_tests</span>(<span class="hljs-params">metafunc</span>):
+      <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;start_state&quot;</span> <span class="hljs-keyword">in</span> metafunc.fixturenames:
+          metafunc.parametrize(<span class="hljs-string">&quot;start_state&quot;</span>, [<span class="hljs-string">&quot;done&quot;</span>, <span class="hljs-string">&quot;in prog&quot;</span>, <span class="hljs-string">&quot;todo&quot;</span>])
+
+
+  <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_finish</span>(<span class="hljs-params">cards_db, start_state</span>):
+      c = Card(<span class="hljs-string">&quot;write tdd book&quot;</span>, state=start_state)
+      index = cards_db.add_card(c)
+      cards_db.finish(index)
+      card = cards_db.get_card(index)
+      <span class="hljs-keyword">assert</span> card.state == <span class="hljs-string">&quot;done&quot;</span>
+</code></pre>
+</li>
+<li>While running pytest, it calls it as 3 different tests with 3 different inputs.</li>
+</ul>
+<h2 id="markers">Markers</h2>
+<ul>
+<li>You can use markers conditionally too. For example, if you want to skip a test if version of app is &lt; 2:</li>
+</ul>
+<pre><code class="language-python"><span class="hljs-meta">@pytest.mark.skipif(<span class="hljs-params">
+    parse(<span class="hljs-params">cards.__version__</span>).major &lt; <span class="hljs-number">2</span>,
+    reason=<span class="hljs-string">&quot;Card &lt; comparison not supported in 1.x&quot;</span>,
+</span>)</span>
+</code></pre>
+<ul>
+<li><strong>pytest.mark.xfail</strong>:
+<ul>
+<li>When to use? Suppose you have a test that you know is going to fail (maybe due to a bug in some other library), you mark it as xfail. The output will be:
+<ul>
+<li>xfail if the test actually failed</li>
+<li>xpass if the test that was supposed to fail ended up passing</li>
+</ul>
+</li>
+<li>You can add <code>strict=True</code> in the xfail function to indicate that it should fail if it actually passes.
+<ul>
+<li>Use Case? You would like to be notified that the test actually passed when it should have failed. This is useful when a lot of tests are automated today through CI jobs.</li>
+</ul>
+</li>
+<li>you can add the following in <code>pytest.ini</code> if you want this be the case for all the xfail tests:</li>
+</ul>
+</li>
+</ul>
+<pre><code>[pytest]
+xfail_strict = True
+</code></pre>
+<ul>
+<li><code>pytest --runxfail</code> is useful when i want to ensure tests dont have the xfail mark when running through CLI</li>
+<li>You can create your own custom markers as well as follows:
+<ul>
+<li>Add the following to <code>pytest.ini</code>:</li>
+</ul>
+<pre><code>[pytest]
+markers =
+    smoke: subset of tests # this is an example marker
+    exception: check for expected exceptions # another example
+</code></pre>
+<ul>
+<li>Use the markers: <code>@pytest.mark.smoke</code> or <code>@pytest.mark.exception</code> above tests.</li>
+<li>Call them while running pytest: <code>pytest -m &lt;name of marker&gt;</code></li>
+<li>Use Case? Helpful in organizing similar tests together</li>
+</ul>
+</li>
+<li>If you want every test in a file to have a mark you can do this: <code>pytestmark = [pytest.mark.smoke, pytest.mark.finish]</code></li>
+<li>You can apply pytest.mark on entire classes too</li>
+<li>You can also mark pytest parameters like this:<pre><code class="language-python"><span class="hljs-meta">@pytest.mark.parametrize(<span class="hljs-params">
+    <span class="hljs-string">&quot;start_state&quot;</span>,
+    (<span class="hljs-params">
+        <span class="hljs-string">&quot;todo&quot;</span>,
+        pytest.param(<span class="hljs-params"><span class="hljs-string">&quot;in prog&quot;</span>, marks=pytest.mark.smoke</span>),
+        <span class="hljs-string">&quot;done&quot;</span>,
+    </span>),
+</span>)   </span>
+</code></pre>
+</li>
+<li>If you want misspelled markers to be identified during collection time itself and not runtime, run <code>pytest --strict-markers</code>. Fails a lot faster.</li>
+<li>To list all markers available: <code>pytest --markers</code></li>
+<li>You can combine markers with fixtures such that the markers provide inputs to the fixtures. for eg:
+<ul>
+<li>Suppose you want to call the <code>cards_db</code> fixture with a marker above the test like <code>@pytest.mark.num_cards(n)</code> where <code>n</code> is the number of cards you would like to the fixture to have.</li>
+<li>You can do it as follows:<pre><code class="language-python"><span class="hljs-meta">@pytest.fixture(<span class="hljs-params">scope=<span class="hljs-string">&quot;function&quot;</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">cards_db</span>(<span class="hljs-params">db, request, faker</span>):
+    <span class="hljs-comment"># start empty</span>
+    db.delete_all()
+
+    <span class="hljs-comment"># support for `@pytest.mark.num_cards(&lt;some number&gt;)`</span>
+
+    <span class="hljs-comment"># random seed</span>
+    faker.seed_instance(<span class="hljs-number">101</span>)
+    m = request.node.get_closest_marker(<span class="hljs-string">&quot;num_cards&quot;</span>)
+    <span class="hljs-keyword">if</span> m <span class="hljs-keyword">and</span> <span class="hljs-built_in">len</span>(m.args) &gt; <span class="hljs-number">0</span>:
+        num_cards = m.args[<span class="hljs-number">0</span>]
+        <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_cards):
+            db.add_card(
+                Card(summary=faker.sentence(), owner=faker.first_name())
+            )
+    <span class="hljs-keyword">return</span> db
+</code></pre>
+</li>
+<li>NOTE: faker is a package and a pytest fixture that allows you to generate random stuff.</li>
+</ul>
+</li>
+</ul>
+<h2 id="16-test-strategy">1.6. Test Strategy</h2>
+<ul>
+<li>Determining test scope-
+<ul>
+<li>User visible functionality / features</li>
+<li>Security</li>
+<li>Performance</li>
+<li>Loading</li>
+<li>Input Validation</li>
+</ul>
+</li>
+<li>While writing test cases, consider-
+<ul>
+<li>Happy path test case</li>
+<li>Interesting sets of input</li>
+<li>Diff starting states</li>
+<li>Diff ending states</li>
+<li>All possible error states</li>
+</ul>
+</li>
+</ul>
+<h2 id="17-configuration-files">1.7. Configuration Files</h2>
+<ul>
+<li>Determining Root dir - From whichever dir you run pytest, if <code>pytest.ini</code> is not found, it will keep going one dir up until it finds the file and that dir will be the root dir.</li>
+<li>Alternatives to <code>pytest.ini</code> -
+<ul>
+<li>tox.ini</li>
+<li>pyproject.toml</li>
+<li>setup.cfg (Least recommended - uses different parser)</li>
+</ul>
+</li>
+<li>Having the <code>__init__.py</code> file in different subdirectories of the test folder having same test file names allows duplication of test file names.</li>
+</ul>
+<h2 id="18-coverage">1.8. Coverage</h2>
+<ul>
+<li>Coverage can be calculated 2 ways-
+<ul>
+<li>Using the coverage package</li>
+<li>Or the <code>cov</code> plugin in pytest</li>
+</ul>
+</li>
+<li>Using cov plugin-
+<ul>
+<li><code>pip install pytest-cov</code></li>
+<li><code>pytest &lt;directory_of_tests&gt; --cov=&lt;dir_to_source_code&gt; --cov-report=term-missing</code></li>
+</ul>
+</li>
+<li>Directly using coverage command-
+<ul>
+<li><code>coverage run --source-&lt;dir_to_source_code&gt; -m pytest &lt;directory_of_tests&gt;</code></li>
+<li><code>coverage report --show-missing</code></li>
+</ul>
+</li>
+<li><code>.coveragerc</code> is the configuration file for coverage.</li>
+<li>Example contents in the file:<pre><code>[paths]
+source =
+    cards_proj/src/cards
+    */site-packages/cards
+</code></pre>
+</li>
+<li>To generate a HTML report for missed lines in the coverage-
+<ul>
+<li><code>--cov-report=html</code></li>
+<li>or <code>coverage run</code> followed by <code>coverage html</code></li>
+</ul>
+</li>
+<li>If you dont want a piece of code to be excluded from coverage, add <code>#pragma: no cover</code> next to it. Usually used next to <code>__name__ == __main__</code></li>
+<li>Another way to exclude something from coverage, add the following to <code>.coveragerc</code>-<pre><code>[report]
+exclude_also =
+  if __name__ == .__main__.:
+</code></pre>
+</li>
+<li>You can cover tests also by adding <code>--cov=test_dir</code>. If you copy test function and forget to change test name, this is a good way to catch it.</li>
+<li>If you want to set min coverage level run <code>pytest --cov=cards --cov-fail-under=80</code></li>
+<li>If you have the test functions and the src code in the same file, you don't need to import pytest. Only import if you want to use the pytest wrappers etc. You can import it as follows-</li>
+</ul>
+<pre><code class="language-python"><span class="hljs-comment"># src code</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():
+  <span class="hljs-keyword">pass</span>
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
+  main()
+<span class="hljs-keyword">else</span>
+  <span class="hljs-keyword">import</span> pytest
+<span class="hljs-comment"># test functions</span>
+</code></pre>
+<h2 id="19-mocking">1.9. Mocking</h2>
+<ul>
+<li>You can test CLI Commands with <code>CLIRunner</code> in <code>pytest.testing</code>.</li>
+<li>Example-<pre><code class="language-python"><span class="hljs-keyword">from</span> typer.testing <span class="hljs-keyword">import</span> CLiRunner
+
+runner = CLiRunner()
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">test_typer_runner</span>():
+    result = runner.invoke(app, [<span class="hljs-string">&quot;list&quot;</span>, <span class="hljs-string">&quot;-o&quot;</span>, <span class="hljs-string">&quot;brian&quot;</span>])
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;list: <span class="hljs-subst">{result.stdout}</span>&quot;</span>)
+</code></pre>
+where app is<pre><code class="language-python">app = typer.Typer(add_completion=<span class="hljs-literal">False</span>)
+</code></pre>
+</li>
+<li><code>shlex.split()</code> can be used to split CLI commands</li>
+<li>Mocking can be done as follows-<pre><code class="language-python"><span class="hljs-keyword">from</span> unittest <span class="hljs-keyword">import</span> mock <span class="hljs-comment">#mock is part of unittest module now</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">test_mock_version</span>():
+  <span class="hljs-keyword">with</span> mock.patch.<span class="hljs-built_in">object</span>(cards, <span class="hljs-string">&quot;__version__&quot;</span>, <span class="hljs-string">&quot;1.2.3&quot;</span>):
+      result = cards_cli(<span class="hljs-string">&quot;version&quot;</span>)
+</code></pre>
+</li>
+<li>Suppose you want to mock a class- <code>db = cards.CardsDB(db_path)</code><pre><code class="language-python"><span class="hljs-keyword">with</span> mock.patch.<span class="hljs-built_in">object</span>(cards, <span class="hljs-string">&quot;CardsDB&quot;</span>) <span class="hljs-keyword">as</span> MockCardsDB:
+  MockCardsDB.return_value.path.return_value = <span class="hljs-string">&quot;/foo/&quot;</span>
+</code></pre>
+</li>
+<li>If interface of an API changes, the mock objects dont throw an error. In order to prevent the mock object from inventing interfaces, use <code>autospec=True</code> in the <code>mock.path.object</code>.</li>
+<li>Ensuring transition of states happen correctly-<pre><code class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">test_count</span>(<span class="hljs-params">mock_cardsdb</span>):
+  cards_cli(<span class="hljs-string">&quot;start 23&quot;</span>)
+  mock_cardsdb.start.assert_called_with(<span class="hljs-number">23</span>)
+</code></pre>
+</li>
+<li>Adding side effect for exceptions - <code>mock_cardsdb.start.side_effect = cards.api.InvalidCardId</code></li>
+<li>Listing cards example-<pre><code class="language-python">  expected_output = <span class="hljs-string">&quot;&quot;&quot;\
+                                  
+  ID   state   owner   summary    
+  ──────────────────────────────── 
+  1    todo            some task  
+  2    todo            another
+                                  
+  &quot;&quot;&quot;</span>
+
+
+  <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_list</span>(<span class="hljs-params">mock_cardsdb</span>):
+      some_cards = [
+          cards.Card(<span class="hljs-string">&quot;some task&quot;</span>, <span class="hljs-built_in">id</span>=<span class="hljs-number">1</span>),
+          cards.Card(<span class="hljs-string">&quot;another&quot;</span>, <span class="hljs-built_in">id</span>=<span class="hljs-number">2</span>),
+      ]
+      mock_cardsdb.list_cards.return_value = some_cards
+      output = cards_cli(<span class="hljs-string">&quot;list&quot;</span>)
+      <span class="hljs-keyword">assert</span> output.strip() == expected_output.strip()
+</code></pre>
+</li>
+<li><strong>REMEMBER</strong>: Mocks dont test behaviour, just the implementation</li>
+<li>plugins for mocking-
+<ul>
+<li>Databases: pytest-postgresql, pytest-mongo etc</li>
+<li>HTTP servers: pytest-httpserver</li>
+<li>Requests: responses, betamax</li>
+<li>Misc: pytest-rabbitmq, pytest-redis</li>
+</ul>
+</li>
+</ul>
+<h2 id="110-tox-and-ci">1.10. Tox and CI</h2>
+<ul>
+<li>CI - combining integrations from multiple people</li>
+<li>tox
+<ul>
+<li>mini local CI system</li>
+<li>build project, create venv</li>
+</ul>
+</li>
+<li>Simple tox file syntax-<pre><code>[tox]
+envlist = py312
+
+[testenv]
+deps = pytest
+commands = pytest
+</code></pre>
+</li>
+<li>tox envs can be run parallely as well. For example -<pre><code>[tox]
+envlist = py38, py39, py312
+
+[testenv]
+deps = pytest
+commands = pytest
+</code></pre>
+with the <code>-p</code> parameter : <code>tox -c tox.ini -p</code></li>
+<li>To pass pytest parameters through tox, add <code>posargs</code> : <code>pytest --cov=cards {posargs}</code> and while running tox command add the <code>--</code> seperator - <code>tox -c tox.ini -e py312 -- -v -k test_version</code></li>
+<li>If you want to add src code path to syspath, add the following to tox.ini-<pre><code>[pytest]
+pythonpath = src
+</code></pre>
+</li>
+</ul>
+<h2 id="111-debugging">1.11. Debugging</h2>
+<h3 id="1111-flags-for-selecting-which-tests-to-run-in-which-order-and-when-to-stop">1.11.1. Flags for selecting which tests to run, in which order, and when to stop:</h3>
+<ul>
+<li><code>--lf</code> / <code>--last-failed</code>: Runs just the tests that failed last</li>
+<li><code>--ff</code> / <code>--failed-first</code>: Runs all the tests, starting with the last failed</li>
+<li><code>-x</code> / <code>--exitfirst</code>: Stops the tests session after the first failure</li>
+<li><code>--maxfail=num</code>: Stops the tests after num failures</li>
+<li><code>--nf</code> / <code>--new-first</code>: Runs all the tests, ordered by file modification time</li>
+<li><code>--sw</code> / <code>--stepwise</code>: Stops the tests at the first failure. Starts the tests at the last failure next time</li>
+<li><code>--sw-skip</code> / <code>--stepwise-skip</code>: Same as --sw, but skips the first failure</li>
+</ul>
+<h3 id="1112-flags-to-control-pytest-output">1.11.2. Flags to control pytest output:</h3>
+<ul>
+<li><code>-v</code> / <code>--verbose</code>: Displays all the test names, passing or failing</li>
+<li><code>--tb=[auto/long/short/line/native/no]</code>: Controls the traceback style</li>
+<li><code>-l</code> / <code>--showlocals</code>: Displays local variables alongside the stacktrace</li>
+</ul>
+<h3 id="1113-flags-to-start-a-command-line-debugger">1.11.3. Flags to start a command-line debugger:</h3>
+<ul>
+<li><code>--pdb</code>: Starts an interactive debugging session at the point of failure</li>
+<li><code>--trace</code>: Starts the pdb source-code debugger immediately when running each test</li>
+</ul>
+<h2 id="112-third-party-plugins">1.12. Third-party Plugins</h2>
+<ul>
+<li>pytest-order - specifify order of tests</li>
+<li>pytest-randomly - Randomize test</li>
+<li>pytest-repeat</li>
+<li>pytest-rerunfailures</li>
+<li>pytest-xdist - running tests in parallel</li>
+<li>pytest-instafail</li>
+<li>pytest-sugar - make it pretty</li>
+<li>pytest-html - generate html output for tests</li>
+<li>pytest-benchmark - how long it takes to run the tests</li>
+<li>pytest-freezegun - Freeze the time for any app that runs code to retrieve time</li>
+</ul>
+<h2 id="113-building-plugins">1.13. Building plugins</h2>
+<ul>
+<li>Three main hook functions can be used:
+<ul>
+<li><code>pytest_configure(config)</code> - Configure markers</li>
+<li><code>pytest_addoption(parser)</code> - Add pytest flag</li>
+<li><code>pytest_collect_modifyitems(config, items)</code> - This is called after test collection happens and you know what to do and want to modify the behaviour of pytest</li>
+<li>To create a package out of the plugin, do the following:
+<ul>
+<li><code>pip install flit</code> (Flit is used to put python packages and modules on PyPI)</li>
+<li><code>flit init</code> - It creates a pyproject file and license file.</li>
+<li><code>flit build</code> (add <code>--no-use-vcs</code> is you dont want it to use version control)</li>
+</ul>
+</li>
+<li><a href="https://packaging.python.org/en/latest/">packaging.python.org</a> has more info on python packaging. Info on pyproject.toml.</li>
+<li>If you want to install packages in editable mode, run <code>pip install -e</code></li>
+<li>If you want to test your plugins, use <code>pytester</code>. It is not turned on by default, you need to turn it on by adding <code>pytest_plugins = [&quot;pytester&quot;]</code> in <code>conftest.py</code>.</li>
+<li>Examples of how to use pytester to run tests:<pre><code class="language-python"><span class="hljs-meta">@pytest.fixture()</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">examples</span>(<span class="hljs-params">pytester</span>):
+    pytester.copy_example(<span class="hljs-string">&quot;examples/test_slow.py&quot;</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">test_skip_slow</span>(<span class="hljs-params">pytester, examples</span>):
+    result = pytester.runpytest(<span class="hljs-string">&quot;-v&quot;</span>)
+    result.stdout.fnmatch_lines(
+        [
+            <span class="hljs-string">&quot;*test_normal PASSED*&quot;</span>,
+            <span class="hljs-string">&quot;*test_slow SKIPPED (need --slow option to run)*&quot;</span>,
+        ]
+    )
+    result.assert_outcomes(passed=<span class="hljs-number">1</span>, skipped=<span class="hljs-number">1</span>)
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">test_run_slow</span>(<span class="hljs-params">pytester, examples</span>):
+    result = pytester.runpytest(<span class="hljs-string">&quot;--slow&quot;</span>)
+    result.assert_outcomes(passed=<span class="hljs-number">2</span>)
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="114-advanced-parameterization">1.14. Advanced Parameterization</h2>
+<ul>
+<li>If you have parameterization for your tests where you pass complex classes / objects, pytest wont show what parameter is passed exactly. It shows up as obj1, obj2 etc.</li>
+<li>To overcome this, use <code>id=</code> while calling the parameterize marker.
+<ul>
+<li><code>id=str</code> pass object as string in pytest output.</li>
+<li><code>id=custom_function</code> function that returns object property or anything.</li>
+<li><code>id=list</code> where list is a custom list of names.</li>
+</ul>
+</li>
+<li>You can also parameterize with dynamic values (generators) as follows:<pre><code class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">text_variants</span>():
+  variants = {
+    <span class="hljs-string">&quot;short&quot;</span>: <span class="hljs-string">&quot;x&quot;</span>,
+    <span class="hljs-string">&quot;with spaces&quot;</span>: <span class="hljs-string">&quot;x y z&quot;</span>,
+    <span class="hljs-string">&quot;end in spaces&quot;</span>: <span class="hljs-string">&quot;x   &quot;</span>,
+  }
+  <span class="hljs-keyword">for</span> key,value <span class="hljs-keyword">in</span> variants.items():
+    <span class="hljs-keyword">yield</span> pytest.param(value, <span class="hljs-built_in">id</span>=key)
+</code></pre>
+</li>
+<li>Parameterization with multiple values can be done in 2 different ways:
+<ul>
+<li>
+<pre><code class="language-python"><span class="hljs-meta">  @pytest.mark.parametrize(<span class="hljs-params">
+    <span class="hljs-string">&quot;summary, owner, state&quot;</span>,
+    [
+        (<span class="hljs-params"><span class="hljs-string">&quot;short&quot;</span>, <span class="hljs-string">&quot;First&quot;</span>, <span class="hljs-string">&quot;todo&quot;</span></span>),
+        (<span class="hljs-params"><span class="hljs-string">&quot;short&quot;</span>, <span class="hljs-string">&quot;First&quot;</span>, <span class="hljs-string">&quot;in prog&quot;</span></span>),
+        <span class="hljs-comment"># ...</span>
+    ],
+  </span>)</span>
+  <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_add_lots</span>(<span class="hljs-params">cards_db, summary, owner, state</span>)
+</code></pre>
+</li>
+<li>
+<pre><code class="language-python">  summaries = [<span class="hljs-string">&quot;short&quot;</span>, <span class="hljs-string">&quot;a bit longer&quot;</span>]
+  owners = [<span class="hljs-string">&quot;First&quot;</span>, <span class="hljs-string">&quot;First M. Last&quot;</span>]
+  states = [<span class="hljs-string">&quot;todo&quot;</span>, <span class="hljs-string">&quot;in prog&quot;</span>, <span class="hljs-string">&quot;done&quot;</span>]
+
+
+<span class="hljs-meta">  @pytest.mark.parametrize(<span class="hljs-params"><span class="hljs-string">&quot;state&quot;</span>, states</span>)</span>
+<span class="hljs-meta">  @pytest.mark.parametrize(<span class="hljs-params"><span class="hljs-string">&quot;owner&quot;</span>, owners</span>)</span>
+<span class="hljs-meta">  @pytest.mark.parametrize(<span class="hljs-params"><span class="hljs-string">&quot;summary&quot;</span>, summaries</span>)</span>
+  <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_stacking</span>(<span class="hljs-params">cards_db, summary, owner, state</span>)
+</code></pre>
+</li>
+</ul>
+</li>
+<li>Indirect fixtures can be used by passing fixture name and list of parameters. For eg-<pre><code class="language-python"><span class="hljs-meta">  @pytest.mark.parameterize(<span class="hljs-params"><span class="hljs-string">&quot;user&quot;</span>, [<span class="hljs-string">&quot;admin&quot;</span>, <span class="hljs-string">&quot;team_member&quot;</span>, <span class="hljs-string">&quot;visitor&quot;</span>], indirect=[<span class="hljs-string">&quot;user&quot;</span>]</span>)</span>
+  <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_user</span>(<span class="hljs-params">user</span>):
+</code></pre>
+This will run the fixture named user first and then pass the parameters corrresponding to that fixture.</li>
+<li>If a fixture is parameterized, it is also possible to select a subset of the parameterized fixture.</li>
+<li></li>
+</ul>
+
+            
+            
+        </body>
+        </html>
