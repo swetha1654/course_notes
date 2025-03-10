@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>1&period; Terraform Notes</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <ul>
+<li><a href="#1-terraform-notes">1. Terraform Notes</a>
+<ul>
+<li><a href="#11-what-is-infrastructure-as-code-iac">1.1. What is Infrastructure as Code (IaC)</a></li>
+<li><a href="#12-terraform-overview-and-setup">1.2. Terraform Overview and Setup</a>
+<ul>
+<li><a href="#121-overview-of-terraform-architecture">1.2.1. Overview of Terraform Architecture</a></li>
+<li><a href="#122-setup">1.2.2. Setup</a></li>
+</ul>
+</li>
+<li><a href="#13-state-file">1.3. State File</a></li>
+<li><a href="#14-variables-and-outputs">1.4. Variables and Outputs</a>
+<ul>
+<li><a href="#141-variable-types">1.4.1. Variable types</a></li>
+<li><a href="#142-setting-input-variables">1.4.2. Setting Input Variables</a></li>
+<li><a href="#143-types--validation">1.4.3. Types &amp; Validation</a></li>
+<li><a href="#144-sensitive-data">1.4.4. Sensitive Data</a></li>
+</ul>
+</li>
+<li><a href="#15-additional-language-features">1.5. Additional Language Features</a>
+<ul>
+<li><a href="#151-expressions--functions">1.5.1. Expressions + Functions</a></li>
+<li><a href="#152-meta-arguments">1.5.2. Meta Arguments</a></li>
+<li><a href="#153-provisioners">1.5.3. Provisioners</a></li>
+</ul>
+</li>
+<li><a href="#16-project-organization--modules">1.6. Project Organization &amp; Modules</a>
+<ul>
+<li><a href="#161-module">1.6.1. Module</a></li>
+</ul>
+</li>
+<li><a href="#17-managing-multiple-environments">1.7. Managing Multiple Environments</a></li>
+<li><a href="#18-testing-terraform-code">1.8. Testing Terraform Code</a></li>
+<li><a href="#19-developer-workflows">1.9. Developer Workflows</a></li>
+<li><a href="#110-potiential-gotchas">1.10. Potiential Gotchas</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="1-terraform-notes">1. Terraform Notes</h1>
+<h2 id="11-what-is-infrastructure-as-code-iac">1.1. What is Infrastructure as Code (IaC)</h2>
+<ul>
+<li>Categories of IaC tools:
+<ul>
+<li>Ad hoc scripts</li>
+<li>Configuration management tools</li>
+<li>Server Templating tools</li>
+<li>Orchestration tools</li>
+<li>Provisioning tools</li>
+</ul>
+</li>
+<li>Declarative vs Imperative:
+<ul>
+<li><strong>Declarative tools</strong> - Define the end state of what you want (mention how much you want beforehand). The tool decides how to reach that end state with what API calls.</li>
+<li><strong>Imperative tools</strong> - You tell the system what you want to happen and sequence in which to happen.</li>
+</ul>
+</li>
+<li>Terraform is more declarative.</li>
+<li>IaC Provisioning Tools Landscape -
+<ul>
+<li><strong>Cloud Specific</strong> - Cloud Formation, Azure Resource Manager, GC Deployment Manager</li>
+<li><strong>Cloud Agnostic</strong> - Terraform, Pulumi</li>
+</ul>
+</li>
+</ul>
+<h2 id="12-terraform-overview-and-setup">1.2. Terraform Overview and Setup</h2>
+<ul>
+<li>Terraform is a tool for building, changing and versioning infrastructure safely and efficiently.</li>
+<li>Enables application software best practices to infrastructure.</li>
+<li>Compatible with many clouds and services.</li>
+<li>TF is a provisioning focused tool, you can combine it with other tools like config management tools. Eg: Ansible (to install needed dependencies)</li>
+</ul>
+<h3 id="121-overview-of-terraform-architecture">1.2.1. Overview of Terraform Architecture</h3>
+<p><img src="file:////Users/swethaswaminathan/Desktop/Swetha/Notes/Terraform/image.png" alt="Terraform Architecture"></p>
+<h3 id="122-setup">1.2.2. Setup</h3>
+<ul>
+<li><code>brew install terraform</code></li>
+<li>Create a tf file (suppose you configure an aws instance)</li>
+<li><code>terraform init</code> (initialize the backend)</li>
+<li><code>terraform plan</code> (Goes to aws to see the current state and compares with the resources specified in the tf file)</li>
+<li><code>terraform apply</code> (initalize the resources)</li>
+<li><code>terraform destroy</code> (destroy resources)</li>
+</ul>
+<h2 id="13-state-file">1.3. State File</h2>
+<ul>
+<li>Terraform's representation of the world</li>
+<li>JSON file containing info about every resource and data object.</li>
+<li>Contains senstive info. Always encrypt it.</li>
+<li>Can be stored locally or remotely. (Remotely in S3 or GCS or Terraform Cloud)</li>
+</ul>
+<h2 id="14-variables-and-outputs">1.4. Variables and Outputs</h2>
+<h3 id="141-variable-types">1.4.1. Variable types</h3>
+<ul>
+<li>
+<p>Input variables</p>
+<ul>
+<li>var.{name}</li>
+<li>Example:</li>
+</ul>
+<pre><code>variable &quot;instance type&quot; {
+  descriptiom = &quot;ec2 instance type&quot;
+  type = string
+  default = &quot;t2.micro&quot;
+}
+</code></pre>
+</li>
+<li>
+<p>Local Variables</p>
+<ul>
+<li>local.{name}</li>
+<li>Example:</li>
+</ul>
+<pre><code>locals {
+  service_name = &quot;My Service&quot;
+}
+</code></pre>
+</li>
+<li>
+<p>Output Variables</p>
+<ul>
+<li>Example-</li>
+</ul>
+<pre><code>output &quot;instance_ip_Addr&quot; {
+  value = aws_instance.instance.public_ip
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="142-setting-input-variables">1.4.2. Setting Input Variables</h3>
+<p>(Order of precendence: lowest -&gt; highest)</p>
+<ul>
+<li>Manual entry during plan/apply</li>
+<li>Default value in declaration block</li>
+<li>TF_VAR_{name} env variables</li>
+<li>terraform.tfvars file</li>
+<li><code>*.auto.tfvars</code> file</li>
+<li>Command line -var or -var-file</li>
+</ul>
+<h3 id="143-types--validation">1.4.3. Types &amp; Validation</h3>
+<ul>
+<li>Primitive-
+<ul>
+<li>string</li>
+<li>number</li>
+<li>bool</li>
+</ul>
+</li>
+<li>Complex:
+<ul>
+<li>list</li>
+<li>set</li>
+<li>map</li>
+<li>object</li>
+<li>tuple</li>
+</ul>
+</li>
+<li>Validation-
+<ul>
+<li>type checking happens automatically</li>
+<li>custom conditions can be enforced</li>
+</ul>
+</li>
+</ul>
+<h3 id="144-sensitive-data">1.4.4. Sensitive Data</h3>
+<ul>
+<li>Mark variables as sensitive with <code>sensitive = true</code></li>
+<li>Pass to tf apply with <code>TV_VAR_variable</code> / <code>-var</code> command</li>
+<li>Can also use external secret store like AWS Secrets Manager</li>
+</ul>
+<h2 id="15-additional-language-features">1.5. Additional Language Features</h2>
+<h3 id="151-expressions--functions">1.5.1. Expressions + Functions</h3>
+<ul>
+<li>Expressions
+<ul>
+<li>Template Strings</li>
+<li>Operators (!, -, *, /, %, &gt;, ==, etc)</li>
+<li>Conditionals (cond ? true: false)</li>
+<li>For ([for o in var.list: <a href="http://o.id">o.id</a>])</li>
+<li>Splat (var.list[*].id)</li>
+<li>Dynamic Blocks</li>
+<li>Constraints (Type &amp; Version)</li>
+</ul>
+</li>
+<li>Functions
+<ul>
+<li>Numberic</li>
+<li>String</li>
+<li>Collection</li>
+<li>Encoding</li>
+<li>Filesystem</li>
+<li>Date&amp;Time</li>
+<li>Hash &amp; Crypto etc</li>
+</ul>
+</li>
+</ul>
+<h3 id="152-meta-arguments">1.5.2. Meta Arguments</h3>
+<ul>
+<li>depends_on
+<ul>
+<li>Tf automatically generates dependency graph based on references</li>
+<li>If 2 resources depend on each other (but not each others data), depends on specifies that dependency to enforce ordering</li>
+</ul>
+</li>
+<li>Count
+<ul>
+<li>Allows for creation of multiple resources/modules from a single block</li>
+</ul>
+</li>
+<li>for_each
+<ul>
+<li>Allows for creation of multiple resources/modules from a single block</li>
+<li>Allows more control to customize each resource than count</li>
+</ul>
+</li>
+<li>Lifecycle
+<ul>
+<li>Set of meta arguments to control tf behaviour for specific resources</li>
+<li>create_before_destroy (bool)</li>
+<li>ignore_changes  (list)</li>
+<li>prevent_destroy (bool)</li>
+</ul>
+</li>
+</ul>
+<h3 id="153-provisioners">1.5.3. Provisioners</h3>
+<ul>
+<li>Perform action on local / remote machine</li>
+<li>Tf with other tools can act as provisioner</li>
+</ul>
+<h2 id="16-project-organization--modules">1.6. Project Organization &amp; Modules</h2>
+<h3 id="161-module">1.6.1. Module</h3>
+<ul>
+<li>Container for taking multiple resources used together and bundling them in a reusable fashion.</li>
+<li>Collection of <code>.tf</code> and <code>.tf.json</code> files in a single directory</li>
+<li>Types of Modules:
+<ul>
+<li>Root Module - Default module containing all .tf files in the main working dir.</li>
+<li>Child Module - A seperate external module referred to from a .tf file</li>
+</ul>
+</li>
+<li>Module sources:
+<ul>
+<li>Local paths</li>
+<li>TF registry</li>
+<li>Github</li>
+<li>HTTP URLs</li>
+</ul>
+</li>
+<li>Example:</li>
+</ul>
+<pre><code>module &quot;example&quot; {
+    source = &quot;{source}&quot;
+
+    # define all the input values here that the module consumes
+}
+</code></pre>
+<h2 id="17-managing-multiple-environments">1.7. Managing Multiple Environments</h2>
+<ul>
+<li>Two approaches-
+<ul>
+<li><strong>Workspaces</strong> - Multiple named sections within a single backend</li>
+<li><strong>File Structure</strong> - Directory layout provides seperation, modules provide reuse</li>
+</ul>
+</li>
+<li>Workspaces-
+<ul>
+<li><strong>Pros</strong> -
+<ul>
+<li>Easy to get started</li>
+<li>Convenient terraform.workspace</li>
+<li>Minimize code duplication</li>
+</ul>
+</li>
+<li><strong>Cons</strong>-
+<ul>
+<li>Prone to human error</li>
+<li>State stored within same backend</li>
+<li>Codebase doesnt unambiguously show deployment configurations</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>File Structure-
+<ul>
+<li><strong>Pros</strong>-
+<ul>
+<li>Isolation of backends (better security and less human error)</li>
+<li>Codebase fully represents deployed state</li>
+</ul>
+</li>
+<li><strong>Cons</strong>-
+<ul>
+<li>Multiple tf apply required to provision environments</li>
+<li>More code duplication (can be minimized with modules)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Terragrunt</strong> - A tool that provides utilities to make certain tf use cases easier.</li>
+<li>Commands-
+<ul>
+<li><code>terraform workspace list</code></li>
+<li><code>terraform workspace new production</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="18-testing-terraform-code">1.8. Testing Terraform Code</h2>
+<ul>
+<li>Static checks-
+<ul>
+<li>Built in-
+<ul>
+<li>tf fmt</li>
+<li>tf validate</li>
+<li>tf plan</li>
+<li>custom validation rules</li>
+</ul>
+</li>
+<li>External-
+<ul>
+<li>tflint</li>
+<li>checkov, tfsec, terrascan, terraform-compliance, snyk</li>
+<li>Terraform Sentinel (enterprise only)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Manual Testing - tf init, plan, apply, destroy</li>
+<li>Automated Testing - Terratest</li>
+</ul>
+<h2 id="19-developer-workflows">1.9. Developer Workflows</h2>
+<ul>
+<li>Usually, its good practice to have seperate accounts for dev / staging / prod env.
+<ul>
+<li>It isolates env to protect minimize blast radius</li>
+<li>Reduce naming conflicts for resources</li>
+<li>Con: Add complexity to tf config (but can be done with tooling)</li>
+</ul>
+</li>
+</ul>
+<h2 id="110-potiential-gotchas">1.10. Potiential Gotchas</h2>
+<ul>
+<li>Name changes when refactoring - changing name for you might mean just changing the name of a resource but for tf it means deleting a resource and spinning up a new one.</li>
+<li>Sensitive data in tf state files</li>
+<li>Cloud timeouts</li>
+<li>Naming conflicts</li>
+<li>Forgetting to destroy test-infra</li>
+<li>Uni-directional version upgrades</li>
+</ul>
+
+            
+            
+        </body>
+        </html>
